@@ -40,11 +40,18 @@ journ_error_handling
 
 j_ext=md
 
-while getopts ":e:t" opt
+while getopts ":e:m:st" opt
 do
 	case $opt in
 		e)
 			journ_editor=$OPTARG
+			;;
+		m)
+			j_msg=true
+			JOURN_MESSAGE=$OPTARG
+			;;
+		s)
+			j_stdin=true
 			;;
 		t)
 			j_ext=txt
@@ -60,5 +67,17 @@ do
 	esac
 done
 
+if [ "$j_stdin" = true ]
+then
+	while read line
+	do
+		cat >> "${JOURN_DIR}/$(date -I).$j_ext" #useless use of my fucking dickhole
+	done
+	exit 0
+elif [ "$j_msg" = true ]
+then
+	echo -e "${JOURN_MESSAGE}" >> "${JOURN_DIR}/$(date -I).$j_ext"
+	exit 0
+fi
 
 $journ_editor "${JOURN_DIR}/$(date -I).$j_ext"

@@ -8,7 +8,7 @@ journ - do a journal. in The Shell
 
 # SYNOPSIS
 
-**journ** [**-t**] [**-e** *editor*]
+**journ** [*OPTION... *] [**-e** *editor*] [**-m** *message*]
 
 # DESCRIPTION
 
@@ -20,6 +20,12 @@ By default, **journ** uses the folder "$HOME/.journ". To change the folder used,
 
 **-e**
 :	Use an editor other than the one in the shell variable $EDITOR.
+
+**-m**
+:	Provide text to write into the file instead of opening an editor, like git commit -m.
+
+**-s**
+:	Read from stdin instead of opening the editor.
 
 **-t**
 :	Use a normal text file instead of a Markdown file.
