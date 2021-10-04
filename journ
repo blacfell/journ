@@ -1,0 +1,64 @@
+#!/bin/sh
+
+# this runs at the beginning
+journ_error_handling() {
+	# if not set already, set it to the default
+	if [ -z "${JOURN_DIR}" ]
+	then
+		JOURN_DIR="$HOME/.journ"
+	fi
+
+	# there is probably a more efficient way to do this
+	# if JOURN_DIR exists but isn't a file
+	if [ -a "${JOURN_DIR}" -a ! -d "${JOURN_DIR}" ]
+	then
+		echo "error: $JOURN_DIR is not a directory" >&2
+		exit 1
+	elif [ ! -e "${JOURN_DIR}" ]
+	then
+		echo -n "error: ${JOURN_DIR} does not exist. create it (y/N)? "
+		read j_answer
+
+		if [ $j_answer != "${j_answer#[Yy]}" ]
+		then
+			mkdir -p "${JOURN_DIR}"
+		else
+			exit 1
+		fi
+	fi
+
+	if [ -z $EDITOR ]
+	then
+		echo "error: \$EDITOR could not be found. please set the variable or specify an editor manually with -e." >&2
+		exit 1
+	else
+		journ_editor=$EDITOR
+	fi
+}
+
+journ_error_handling
+
+j_ext=md
+
+while getopts ":e:t" opt
+do
+	case $opt in
+		e)
+			journ_editor=$OPTARG
+			;;
+		t)
+			j_ext=txt
+			;;
+		\?)
+			echo "error: invalid option -$OPTARG" >&2
+			exit 1
+			;;
+		:)
+			echo "error: -$OPTARG needs an argument" >&2
+			exit 1
+			;;
+	esac
+done
+
+
+$journ_editor "${JOURN_DIR}/$(date -I).$j_ext"
